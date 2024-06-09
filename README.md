@@ -96,6 +96,14 @@ python DQN.py --task eval --load 'data/models/BrainMRI/Network3d8agents.pt' --fi
 python DQN.py --task eval --load 'data/models/BrainMRI/SingleAgent.pt' --files 'data/filenames/image_files.txt' 'data/filenames/landmark_files.txt' --file_type brain --landmarks 13 --model_name "Network3d"
 ```
 
+### Inference without ground truth
+
+The argument `--task play` can be used to run inference without any ground truth landmarks. In which case, the argument `--files` should only have `image_files.txt`, and no `landmark_files.txt` should be passed. For example, in the case of 8 C-MARL agents:
+```
+python DQN.py --task play --load 'data/models/BrainMRI/CommNet8agents.pt' --files 'data/filenames/image_files.txt' --file_type brain --landmarks 13 14 0 1 2 3 4 5 --model_name "CommNet"
+```
+
+Please note that when using task mode `play`, the evaluation file and logs have "N/A" instead of the landmark xyz positions and distance, since there is no ground truth available.
 
 ## Usage
 ```

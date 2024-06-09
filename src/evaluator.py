@@ -48,13 +48,17 @@ class Evaluator(object):
                     [info[f"agent_xpos_{i}"] for i in range(self.agents)],
                     [info[f"agent_ypos_{i}"] for i in range(self.agents)],
                     [info[f"agent_zpos_{i}"] for i in range(self.agents)],
-                    [info[f"landmark_xpos_{i}"] for i in range(self.agents)],
-                    [info[f"landmark_ypos_{i}"] for i in range(self.agents)],
-                    [info[f"landmark_zpos_{i}"] for i in range(self.agents)],
-                    [info[f"distError_{i}"] for i in range(self.agents)])))
-                distances.append([info[f"distError_{i}"]
-                                for i in range(self.agents)])
+                    [info.get(f"landmark_xpos_{i}", "N/A") for i in range(self.agents)],
+                    [info.get(f"landmark_ypos_{i}", "N/A") for i in range(self.agents)],
+                    [info.get(f"landmark_zpos_{i}", "N/A") for i in range(self.agents)],
+                    [info.get(f"distError_{i}", "N/A") for i in range(self.agents)])))
+                for i in range(self.agents):
+                    key = f"distError_{i}"
+                    if key in info:
+                        distances.append(info[key])
                 self.logger.write_locations(row)
+        if len(distances) == 0:
+            return None, None # No distance mean and std for task "play" as there is no ground truth
         mean = np.mean(distances, 0)
         std = np.std(distances, 0, ddof=1)
         if not silent:
@@ -88,7 +92,7 @@ class Evaluator(object):
             steps += 1
             if start_dists is None:
                 start_dists = [
-                    info['distError_' + str(i)] for i in range(self.agents)]
+                    info.get('distError_' + str(i), "N/A") for i in range(self.agents)]
             if render:
                 self.env.render()
             for i in range(self.agents):

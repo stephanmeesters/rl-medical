@@ -61,8 +61,12 @@ class Evaluator(object):
             return None, None # No distance mean and std for task "play" as there is no ground truth
         mean = np.mean(distances, 0)
         std = np.std(distances, 0, ddof=1)
+        min = np.min(distances)
+        max = np.max(distances)
         if not silent:
             self.logger.log(f"mean distances {mean}")
+            self.logger.log(f"min distances {min}")
+            self.logger.log(f"max distances {max}")
             self.logger.log(f"Std distances {std}")
         return mean, std
 
